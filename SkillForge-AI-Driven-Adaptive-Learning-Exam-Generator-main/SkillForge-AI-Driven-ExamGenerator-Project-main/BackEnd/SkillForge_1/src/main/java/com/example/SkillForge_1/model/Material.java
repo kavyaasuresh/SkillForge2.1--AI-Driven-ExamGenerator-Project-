@@ -70,7 +70,7 @@ public class Material {
     @Column(nullable = false)
     private MaterialType materialType; // PDF, VIDEO, IMAGE
 
-    @Column(nullable = false, length = 2000)
+    @Column(nullable = false, length = 5000)
     private String contentUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -176,10 +176,7 @@ const InstructorQuizManager = () => {
             );
 
             if (!hasRealQuestions) {
-                setMessage({
-                    type: 'warning',
-                    text: 'AI service returned sample questions. Check your API key and internet connection.'
-                });
+                // Silently handle or log if needed, user requested removal of warning message
             } else {
                 setMessage({
                     type: 'success',
@@ -215,7 +212,7 @@ const InstructorQuizManager = () => {
             let errorMessage = 'Failed to generate questions. ';
 
             if (err.message.includes('AI generation failed')) {
-                errorMessage += 'Please check your internet connection and API key configuration.';
+                errorMessage += 'Generation process encountered an issue.';
             } else if (err.message.includes('No questions were generated')) {
                 errorMessage += 'The AI service did not return any questions. Please try again.';
             } else {
@@ -248,7 +245,9 @@ const InstructorQuizManager = () => {
                 questionId: q.questionId || '',
                 questionText: q.questionText || q.question || '',
                 type: type,
-                options: Array.isArray(q.options) ? q.options : (q.options_array || ['', '', '', '']),
+                options: Array.isArray(q.options) && q.options.length > 0 ? q.options :
+                    (q.options_array && q.options_array.length > 0 ? q.options_array :
+                        [q.optionA || '', q.optionB || '', q.optionC || '', q.optionD || '']),
                 correctAnswer: ["A", "B", "C", "D"].includes(q.correctAnswer) ? q.correctAnswer : "A"
             };
         });

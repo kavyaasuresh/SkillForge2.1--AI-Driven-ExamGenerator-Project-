@@ -9,6 +9,7 @@ import axios from "axios";
 
 // API Base URL - Change port if needed
 const API_BASE_URL = "http://localhost:8081/api";
+export const BACKEND_URL = "http://localhost:8081";
 
 // Helper to get JWT token
 const getAuthHeader = () => {
@@ -220,6 +221,18 @@ export const courseService = {
             reader.onerror = reject;
             reader.readAsDataURL(file);
         });
+    },
+
+    /**
+     * Helper to resolve material URL
+     * If URL is relative (starts with /uploads), prepend BACKEND_URL
+     */
+    resolveMaterialUrl(url) {
+        if (!url) return "";
+        if (url.startsWith("/uploads")) {
+            return `${BACKEND_URL}${url}`;
+        }
+        return url;
     }
 
 };

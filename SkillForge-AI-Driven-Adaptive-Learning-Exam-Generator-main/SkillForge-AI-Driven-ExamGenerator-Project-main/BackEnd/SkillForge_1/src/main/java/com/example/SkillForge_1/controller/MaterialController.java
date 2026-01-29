@@ -70,30 +70,49 @@ public class MaterialController {
         this.fileStorageService = fileStorageService;
     }
 
-    // Upload PDF file
-    @PostMapping("/upload/pdf/{topicId}")
-    public ResponseEntity<Material> uploadPdf(
+    // Upload file as material (Generic for PDF, Video, Image)
+    @PostMapping("/topic/{topicId}/upload")
+    public ResponseEntity<Material> uploadMaterial(
             @PathVariable Long topicId,
             @RequestParam("file") MultipartFile file,
-            @RequestParam("title") String title) {
+            @RequestParam("title") String title,
+            @RequestParam("materialType") String materialTypeStr) {
         try {
             if (file.isEmpty()) {
                 return ResponseEntity.badRequest().build();
             }
-            
-            String filePath = fileStorageService.storeFile(file, "materials");
-            
+
+            com.example.SkillForge_1.model.MaterialType materialType;
+            try {
+                materialType = com.example.SkillForge_1.model.MaterialType.valueOf(materialTypeStr.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                // If type is not recognized, default to PDF or handle as needed
+                materialType = com.example.SkillForge_1.model.MaterialType.PDF;
+            }
+
+            String folder = materialType.toString().toLowerCase() + "s";
+            String filePath = fileStorageService.storeFile(file, folder);
+
             Material material = new Material();
             material.setTitle(title);
             material.setContentUrl(filePath);
-            material.setMaterialType(com.example.SkillForge_1.model.MaterialType.PDF);
-            
+            material.setMaterialType(materialType);
+
             Material savedMaterial = materialService.addMaterial(material, topicId);
             return ResponseEntity.ok(savedMaterial);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    // Keep existing PDF upload for backward compatibility
+    @PostMapping("/upload/pdf/{topicId}")
+    public ResponseEntity<Material> uploadPdf(
+            @PathVariable Long topicId,
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("title") String title) {
+        return uploadMaterial(topicId, file, title, "PDF");
     }
 
     // Add material with URL

@@ -44,7 +44,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import QuizIcon from "@mui/icons-material/Quiz";
 import axios from "axios";
 
-const materialTypes = ["PDF", "Video", "Image", "Link"];
+const materialTypes = ["PDF", "VIDEO", "IMAGE", "LINK", "DOCX"];
 const difficulties = ["BEGINNER", "INTERMEDIATE", "ADVANCED"];
 // Mapping for display labels if needed, or use directly
 const difficultyLabels = { BEGINNER: "Beginner", INTERMEDIATE: "Intermediate", ADVANCED: "Advanced" };
@@ -187,19 +187,21 @@ export default function CourseList({ courses, setCourses }) {
         if (!course || !topic) return;
 
         try {
+            let type = materialForm.type.toUpperCase();
+            if (type === 'LINK') type = 'URL';
+
             if (isFileUpload) {
-                // Upload file
+                if (type === 'DOCX') type = 'PDF';
                 await courseService.uploadMaterialFile(
                     topic.id,
                     materialForm.file,
                     materialForm.name,
-                    materialForm.type.toUpperCase()
+                    type
                 );
             } else {
-                // URL-based material
                 const materialPayload = {
                     title: materialForm.name,
-                    materialType: materialForm.type.toUpperCase(),
+                    materialType: type,
                     contentUrl: materialForm.url,
                     topic: { id: topic.id }
                 };
@@ -264,17 +266,17 @@ export default function CourseList({ courses, setCourses }) {
 
     const getEmbedUrl = (url) => {
         if (!url) return "";
-        let embedUrl = url;
-        // Ensure protocol
-        if (!embedUrl.startsWith("http")) embedUrl = "https://" + embedUrl;
+        let embedUrl = courseService.resolveMaterialUrl(url);
 
         // Handle YouTube
         if (embedUrl.includes("youtube.com/watch?v=")) {
             embedUrl = embedUrl.replace("youtube.com/watch?v=", "youtube.com/embed/");
-            // Handle params like &t=
             if (embedUrl.includes("&")) embedUrl = embedUrl.split("&")[0];
         } else if (embedUrl.includes("youtu.be/")) {
             embedUrl = embedUrl.replace("youtu.be/", "youtube.com/embed/");
+        } else if (!embedUrl.startsWith("http") && !embedUrl.startsWith("data:")) {
+            // Fallback for relative paths that aren't /uploads (unlikely but safe)
+            embedUrl = "https://" + embedUrl;
         }
         return embedUrl;
     };
@@ -716,7 +718,7 @@ export default function CourseList({ courses, setCourses }) {
                                                                                             style={{ border: 0, background: 'black' }}
                                                                                         />
                                                                                     )}
-                                                                                    {(previewMaterial.materialType === "IMAGE" || previewMaterial.type === "Image" || previewMaterial.materialType === "Image") && <img src={previewMaterial.contentUrl || previewMaterial.url} alt="Preview" style={{ maxWidth: "100%", maxHeight: 500, objectFit: 'contain' }} />}
+                                                                                    {(previewMaterial.materialType === "IMAGE" || previewMaterial.type === "Image" || previewMaterial.materialType === "Image") && <img src={courseService.resolveMaterialUrl(previewMaterial.contentUrl || previewMaterial.url)} alt="Preview" style={{ maxWidth: "100%", maxHeight: 500, objectFit: 'contain' }} />}
                                                                                     {(previewMaterial.materialType === "LINK" || previewMaterial.type === "Link" || previewMaterial.materialType === "Link") && <iframe src={getEmbedUrl(previewMaterial.contentUrl || previewMaterial.url)} width="100%" height="500px" title="Link Preview" style={{ border: 0, background: 'white' }} />}
                                                                                 </Box>
                                                                             </Paper>

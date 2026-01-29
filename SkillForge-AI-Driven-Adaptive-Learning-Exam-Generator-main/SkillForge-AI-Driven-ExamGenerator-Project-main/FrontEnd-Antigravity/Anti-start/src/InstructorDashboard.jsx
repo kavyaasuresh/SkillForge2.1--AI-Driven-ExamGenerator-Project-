@@ -13,7 +13,8 @@ import {
     Avatar,
     IconButton,
     Paper,
-    Grid
+    Grid,
+    LinearProgress
 } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
@@ -160,6 +161,91 @@ const InstructorDashboard = ({ courses }) => {
                                     </Card>
                                 </Grid>
                             ))}
+                        </Grid>
+
+                        {/* Secondary Stats Row */}
+                        <Grid container spacing={4} sx={{ mb: 5 }}>
+                            {/* Difficulty Distribution Section */}
+                            <Grid item xs={12} md={6}>
+                                <Card sx={{
+                                    borderRadius: 5,
+                                    height: '100%',
+                                    border: '1px solid',
+                                    borderColor: alpha(theme.palette.divider, 0.4),
+                                    bgcolor: 'white'
+                                }}>
+                                    <CardContent sx={{ p: 4 }}>
+                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3 }}>
+                                            <AssessmentIcon sx={{ color: 'primary.main' }} />
+                                            <Typography variant="h6" fontWeight="800">5️⃣ Difficulty Distribution</Typography>
+                                        </Box>
+
+                                        <Stack spacing={3}>
+                                            <Box>
+                                                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                                                    <Typography variant="body2" fontWeight="700">Easy</Typography>
+                                                    <Typography variant="body2" fontWeight="800" color="primary">30%</Typography>
+                                                </Box>
+                                                <LinearProgress variant="determinate" value={30} sx={{ height: 10, borderRadius: 5, bgcolor: alpha('#2563eb', 0.1) }} />
+                                            </Box>
+
+                                            <Box>
+                                                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                                                    <Typography variant="body2" fontWeight="700">Medium</Typography>
+                                                    <Typography variant="body2" fontWeight="800" color="success.main">55%</Typography>
+                                                </Box>
+                                                <LinearProgress variant="determinate" value={55} color="success" sx={{ height: 10, borderRadius: 5, bgcolor: alpha('#16a34a', 0.1) }} />
+                                            </Box>
+
+                                            <Box>
+                                                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                                                    <Typography variant="body2" fontWeight="700">Hard</Typography>
+                                                    <Typography variant="body2" fontWeight="800" color="error.main">15%</Typography>
+                                                </Box>
+                                                <LinearProgress variant="determinate" value={15} color="error" sx={{ height: 10, borderRadius: 5, bgcolor: alpha('#dc2626', 0.1) }} />
+                                            </Box>
+                                        </Stack>
+
+                                        <Typography variant="caption" sx={{ display: 'block', mt: 4, fontStyle: 'italic', color: 'text.secondary', fontWeight: 600 }}>
+                                            “This reflects how quiz difficulty is adapting across students.”
+                                        </Typography>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+
+                            {/* Inspirational Quote Section */}
+                            <Grid item xs={12} md={6}>
+                                <Card sx={{
+                                    borderRadius: 5,
+                                    height: '100%',
+                                    background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)',
+                                    color: 'white',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    position: 'relative',
+                                    overflow: 'hidden'
+                                }}>
+                                    <Box sx={{ position: 'absolute', top: -20, left: -20, width: 100, height: 100, borderRadius: '50%', background: alpha('#fff', 0.1) }} />
+                                    <Box sx={{ position: 'absolute', bottom: -30, right: -30, width: 150, height: 150, borderRadius: '50%', background: alpha('#fff', 0.05) }} />
+
+                                    <CardContent sx={{ p: 5, textAlign: 'center', position: 'relative', zIndex: 1 }}>
+                                        <Typography variant="h5" sx={{
+                                            fontWeight: 500,
+                                            fontStyle: 'italic',
+                                            lineHeight: 1.6,
+                                            mb: 3,
+                                            textShadow: '0 2px 10px rgba(0,0,0,0.1)'
+                                        }}>
+                                            "Teaching is not just about sharing knowledge; it's about shaping hearts and minds for eternity."
+                                        </Typography>
+                                        <Divider sx={{ borderColor: alpha('#fff', 0.3), width: '40%', mx: 'auto', mb: 3 }} />
+                                        <Typography variant="body1" sx={{ fontWeight: 800, letterSpacing: 1 }}>
+                                            INSPIRE THE FUTURE
+                                        </Typography>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
                         </Grid>
 
                         {/* Focus Section & Recent Activity Removed */}

@@ -74,7 +74,8 @@ const CourseMaterials = ({ courseId, topicId, onBack }) => {
             case 'PDF': return <PdfIcon />;
             case 'IMAGE': return <ImageIcon />;
             case 'DOCX': return <DocxIcon />;
-            case 'LINK': return <LinkIcon />;
+            case 'LINK':
+            case 'URL': return <LinkIcon />;
             default: return <PdfIcon />;
         }
     };
@@ -86,7 +87,8 @@ const CourseMaterials = ({ courseId, topicId, onBack }) => {
             case 'PDF': return { bg: '#fef3c7', color: '#f59e0b' };
             case 'IMAGE': return { bg: '#ecfdf5', color: '#10b981' };
             case 'DOCX': return { bg: '#eff6ff', color: '#3b82f6' };
-            case 'LINK': return { bg: '#f5f3ff', color: '#8b5cf6' };
+            case 'LINK':
+            case 'URL': return { bg: '#f5f3ff', color: '#8b5cf6' };
             default: return { bg: '#eff6ff', color: '#3b82f6' };
         }
     };
@@ -95,7 +97,8 @@ const CourseMaterials = ({ courseId, topicId, onBack }) => {
 
     const renderPreviewContent = () => {
         if (!selectedMaterial) return null;
-        const { materialType, contentUrl, title } = selectedMaterial;
+        const { materialType, title } = selectedMaterial;
+        const contentUrl = courseService.resolveMaterialUrl(selectedMaterial.contentUrl);
         const type = materialType?.toUpperCase();
 
         // Handle base64 encoded files
@@ -176,6 +179,7 @@ const CourseMaterials = ({ courseId, topicId, onBack }) => {
                     </Box>
                 );
             case 'LINK':
+            case 'URL':
                 return (
                     <Box sx={{ p: 6, bgcolor: '#fff', width: '100%', textAlign: 'center' }}>
                         <LinkIcon sx={{ fontSize: 64, color: '#6366f1', mb: 2 }} />
@@ -389,7 +393,7 @@ const CourseMaterials = ({ courseId, topicId, onBack }) => {
                         <Button
                             variant="outlined"
                             component="a"
-                            href={selectedMaterial.contentUrl}
+                            href={courseService.resolveMaterialUrl(selectedMaterial.contentUrl)}
                             target="_blank"
                             startIcon={<DownloadIcon />}
                             sx={{ borderRadius: 2, mr: 1 }}
