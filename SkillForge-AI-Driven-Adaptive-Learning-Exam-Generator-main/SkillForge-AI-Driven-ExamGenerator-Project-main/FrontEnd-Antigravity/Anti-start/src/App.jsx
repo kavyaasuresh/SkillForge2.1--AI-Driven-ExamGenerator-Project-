@@ -25,6 +25,7 @@ import PerformanceAnalyticsDashboard from './PerformanceAnalyticsDashboard';
 import StudentDetailedView from './StudentDetailedView';
 import StudentPerformance from './StudentPerformance';
 import ProfilePage from './ProfilePage';
+import LandingPage from './LandingPage';
 
 
 
@@ -287,8 +288,8 @@ function App() {
                                 />
                             </Route>
                             {/* -------- Default / Not Found -------- */}
-                            <Route path="/" element={<Navigate to="/login" replace />} />
-                            <Route path="*" element={<Navigate to="/login" replace />} />
+                            <Route path="/" element={<LandingPage />} />
+                            <Route path="*" element={<Navigate to="/" replace />} />
                         </Routes>
                     </Router>
                 </StudentProvider>
